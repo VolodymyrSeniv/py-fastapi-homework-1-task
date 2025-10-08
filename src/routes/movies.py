@@ -18,12 +18,11 @@ async def get_film(film_id: int, db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/movies/", response_model=MovieListResponseSchema)
-async def get_all_films(
-    request: Request,
-    db: AsyncSession = Depends(get_db),
-    page: int = Query(1, ge=1),
-    per_page: int = Query(2, ge=1, le=20)
-    ):
+async def get_all_films(request: Request,
+                        db: AsyncSession = Depends(get_db),
+                        page: int = Query(1, ge=1),
+                        per_page: int = Query(2, ge=1, le=20)
+                        ):
     movies_result = await db.execute(
         select(MovieModel)
         .order_by(MovieModel.id)

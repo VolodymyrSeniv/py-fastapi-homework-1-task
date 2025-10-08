@@ -25,7 +25,6 @@ class MovieDetailResponseSchema(MovieBase):
         from_attributes = True
 
 
-
 class MovieListResponseSchema(BaseModel):
     movies: List[MovieDetailResponseSchema]
     prev_page: str | None = None
