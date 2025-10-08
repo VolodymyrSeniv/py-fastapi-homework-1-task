@@ -8,6 +8,7 @@ import math
 
 router = APIRouter()
 
+
 @router.get("/movies/{film_id}/", response_model=MovieDetailResponseSchema)
 async def get_film(film_id: int, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(MovieModel).where(MovieModel.id == film_id))
