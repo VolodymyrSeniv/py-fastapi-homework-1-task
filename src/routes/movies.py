@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, status, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
@@ -36,22 +36,13 @@ async def get_all_films(db: AsyncSession = Depends(get_db),
             detail="No movies found.",
         )
 
-    total_items = await db.scalar(select(func.count()).select_from(MovieModel))
+    total_items = int(await db.scalar(select(func.count()).select_from(MovieModel)))
     total_pages = math.ceil(total_items / per_page)
 
     return MovieListResponseSchema(
-        movies=[
-            MovieDetailResponseSchema.model_validate(movie)
-            for movie in movies
-        ],
-        prev_page=(
-            f"/theater/movies/?page={page - 1}&per_page={per_page}"
-            if page > 1 else None
-        ),
-        next_page=(
-            f"/theater/movies/?page={page + 1}&per_page={per_page}"
-            if page < total_pages else None
-        ),
+        movies=movies,
+        prev_page=f"/theater/movies/?page={max(1, page - 1)}&per_page={per_page}" if page > 1 else None,
+        next_page=f"/theater/movies/?page={min(total_pages, page + 1)}&per_page={per_page}" if page < total_pages else None,
         total_pages=total_pages,
         total_items=total_items,
     )
