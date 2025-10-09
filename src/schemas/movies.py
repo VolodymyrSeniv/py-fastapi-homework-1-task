@@ -25,8 +25,8 @@ class MovieDetailResponseSchema(MovieBase):
 
 class MovieListResponseSchema(BaseModel):
     movies: List[MovieDetailResponseSchema]
-    prev_page: str
-    next_page: str
+    prev_page: str | None
+    next_page: str | None
     total_pages: int
     total_items: int
     model_config = {"from_attributes": True}
